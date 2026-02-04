@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<title>GLS Box kiválasztása</title>
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+
+<style>
+body {
+    background: #1e1e1e;
+    color: #eaeaea;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding-top: 40px;
+}
+
+.main-btn {
+    background: #f0c24b;
+    color: #1e1e1e;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.main-btn:hover {
+    background: #d9ad3f;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #2a2a2a;
+    width: 620px;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+#map {
+    width: 100%;
+    height: 360px;
+    margin: 10px 0;
+    border-radius: 6px;
+}
+</style>
+</head>
+<body>
+
+<button class="main-btn" onclick="openMap()">GLS csomagautomata kiválasztása</button>
+
+<div id="mapModal" class="modal">
+    <div class="modal-content">
+        <h3>Válassz GLS boxot</h3>
+        <div id="map"></div>
+        <p id="selectedBox">Nincs kiválasztva</p>
+        <button class="main-btn" onclick="closeMap()">Bezárás</button>
+    </div>
+</div>
+
+<!-- Leaflet -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+let map;
+let mapInitialized = false;
+
+const glsBoxes = [
+    { name: "GLS Box – WestEnd", lat: 47.5111, lng: 19.0560 },
+    { name: "GLS Box – Allee", lat: 47.4766, lng: 19.0474 },
+    { name: "GLS Box – Árkád", lat: 47.5009, lng: 19.1466 }
+];
+
+function openMap() {
+    document.getElementById("mapModal").style.display = "flex";
+
+    if (!mapInitialized) {
+        initMap();
+        mapInitialized = true;
+    }
+}
+
+function closeMap() {
+    document.getElementById("mapModal").style.display = "none";
+}
+
+function initMap() {
+    map = L.map('map').setView([47.4979, 19.0402], 12);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    glsBoxes.forEach(box => {
+        const marker = L.marker([box.lat, box.lng]).addTo(map);
+        marker.on('click', () => {
+            document.getElementById('selectedBox').innerText =
+                "Kiválasztva: " + box.name;
+        });
+    });
+}
+</script>
+
+</body>
+</html>
